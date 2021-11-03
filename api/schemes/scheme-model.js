@@ -2,7 +2,7 @@ const db = require('../../data/db-config')
 
 async function find() { // EXERCISE A
   const rows = await db('schemes as sc')
-    .select('sc.scheme_id', 'sc.scheme_name')
+    .select('sc.*')
     .count('st.step_id as number_of_steps')
     .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
     .groupBy('sc.scheme_id')
@@ -26,7 +26,30 @@ async function find() { // EXERCISE A
   */
 }
 
-function findById(scheme_id) { // EXERCISE B
+async function findById(scheme_id) { // EXERCISE B
+  const rows = await db('schemes as sc')
+    .select('sc.scheme_name', 'sc.scheme_id', 'st.*')
+    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+    .where('sc.scheme_id', scheme_id)
+    .orderBy('st.step_number', 'asc')
+
+  let result = { steps: [] }
+
+  for (let step of rows) {
+    if (!result.scheme_id) {
+      result.scheme_id = step.scheme_id
+      result.scheme_name = step.scheme_name
+    }
+    if (step.step_id) {
+      result.steps.push({
+        step_id: step.step_id,
+        step_number: step.step_number,
+        instructions: step.instructions
+      })
+    }
+  }
+
+  return result
   /*
     1B- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`:
 
@@ -94,12 +117,38 @@ function findById(scheme_id) { // EXERCISE B
   */
 }
 
-function findSteps(scheme_id) { // EXERCISE C
+async function findSteps(scheme_id) { // EXERCISE C
+  const rows = await db('schemes as sc')
+    .select('st.step_id', 'st.step_number', 'st.instructions', 'sc.scheme_name')
+    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+    .where('sc.scheme_id', scheme_id)
+    .orderBy('st.step_number')
+  return rows
+  // let result = { steps: [] }
+
+  // for (let step of rows) {
+  //   if (!result.step_id) {
+  //     result.scheme_id = step.scheme_id
+  //     result.scheme_name = step.scheme_name
+  //   }
+  // }
+  // return result
   /*
+    SELECT
+          sc.scheme_name,
+          st.step_id,
+          st.step_number,
+          st.instructions
+      FROM schemes as sc
+      LEFT JOIN steps as st
+          ON sc.scheme_id = st.scheme_id
+      WHERE sc.scheme_id = id
+      ORDER BY st.step_number ASC;
+ 
     1C- Build a query in Knex that returns the following data.
     The steps should be sorted by step_number, and the array
     should be empty if there are no steps for the scheme:
-
+ 
       [
         {
           "step_id": 5,
