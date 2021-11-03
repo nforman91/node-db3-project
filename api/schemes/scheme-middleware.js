@@ -1,3 +1,5 @@
+const Schemes = require('./scheme-model')
+
 /*
   If `scheme_id` does not exist in the database:
 
@@ -7,7 +9,16 @@
   }
 */
 const checkSchemeId = (req, res, next) => {
-
+  // const { id } = req.params
+  // Schemes.find(id)
+  //   .then(possibleScheme => {
+  //     if (possibleScheme) {
+  //       req.scheme = possibleScheme
+  //       next()
+  //     } else {
+  //       res.status(404).json({ message: `id ${id} not found` })
+  //     }
+  //   })
 }
 
 /*
