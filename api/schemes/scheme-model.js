@@ -120,19 +120,10 @@ async function findById(scheme_id) { // EXERCISE B
 async function findSteps(scheme_id) { // EXERCISE C
   const rows = await db('schemes as sc')
     .select('st.step_id', 'st.step_number', 'st.instructions', 'sc.scheme_name')
-    .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
+    .join('steps as st', 'sc.scheme_id', 'st.scheme_id')
     .where('sc.scheme_id', scheme_id)
     .orderBy('st.step_number')
   return rows
-  // let result = { steps: [] }
-
-  // for (let step of rows) {
-  //   if (!result.step_id) {
-  //     result.scheme_id = step.scheme_id
-  //     result.scheme_name = step.scheme_name
-  //   }
-  // }
-  // return result
   /*
     SELECT
           sc.scheme_name,
