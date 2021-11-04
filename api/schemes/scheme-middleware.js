@@ -30,7 +30,26 @@ const checkSchemeId = (req, res, next) => {
   }
 */
 const validateScheme = (req, res, next) => {
+  const { scheme_name } = req.body
+  // Schemes.add(scheme_id)
+  //   .then(scheme => {
+  //     if (!scheme_name) {
+  //       next()
+  //     } else {
+  //       next({ status: 400, message: "invalid scheme_name" })
+  //     }
+  //   })
 
+  // SOLUTION VIDEO:
+  if (
+    scheme_name === undefined ||
+    typeof scheme_name !== 'string' ||
+    !scheme_name.trim()
+  ) {
+    next({ status: 400, message: "invalid scheme_name" })
+  } else {
+    next()
+  }
 }
 
 /*
@@ -43,7 +62,21 @@ const validateScheme = (req, res, next) => {
   }
 */
 const validateStep = (req, res, next) => {
+  // SOLUTION VIDEO: 
+  const { instructions, step_number } = req.body
 
+  if (
+    instructions === undefined ||
+    typeof instructions !== 'string' ||
+    !instructions.trim() ||
+    typeof step_number !== 'number' ||
+    step_number < 1
+  ) {
+    const error = { status: 400, message: 'invalid step' }
+    next(error)
+  } else {
+    next()
+  }
 }
 
 module.exports = {

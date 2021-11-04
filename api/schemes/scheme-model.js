@@ -124,6 +124,9 @@ async function findSteps(scheme_id) { // EXERCISE C
     .where('sc.scheme_id', scheme_id)
     .orderBy('st.step_number')
   return rows
+  // SOLUTION VIDEO WITH LEFTJOIN: 
+  // if(!rows[0].step_id) return []
+  // return rows
   /*
     SELECT
           sc.scheme_name,
@@ -131,7 +134,7 @@ async function findSteps(scheme_id) { // EXERCISE C
           st.step_number,
           st.instructions
       FROM schemes as sc
-      LEFT JOIN steps as st
+      JOIN steps as st
           ON sc.scheme_id = st.scheme_id
       WHERE sc.scheme_id = id
       ORDER BY st.step_number ASC;
@@ -158,6 +161,11 @@ async function findSteps(scheme_id) { // EXERCISE C
 }
 
 function add(scheme) { // EXERCISE D
+  return db('schemes').insert(scheme)
+    // SOLUTION VIDEO:
+    .then(([scheme_id]) => {
+      return db('schemes').where('scheme_id', scheme_id).first()
+    })
   /*
     1D- This function creates a new scheme and resolves to _the newly created scheme_.
   */
